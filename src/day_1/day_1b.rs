@@ -8,16 +8,16 @@ pub enum Direction {
     Back,
 }
 
-pub fn solve(input: &String) -> String {
-    input
+pub fn solve(input: &String) -> Result<String, String> {
+    let sum = input
         .split('\n')
-        .fold(0, |sum, line| {
-            sum + find(line.as_bytes(), Direction::Front) * 10 + find(line.as_bytes(), Direction::Back)
-        })
-        .to_string()
+        .try_fold::<i32, fn(i32, &str)->Result<i32, String>, Result<i32, String>>(0, |sum, line| {
+            Ok(sum + find(line.as_bytes(), Direction::Front)? * 10 + find(line.as_bytes(), Direction::Back)?)
+        })?;
+    return Ok(sum.to_string())
 }
 
-pub fn find(line: &[u8], direction: Direction) -> i32 {
+pub fn find(line: &[u8], direction: Direction) -> Result<i32, String> {
     let indices: Box<dyn Iterator<Item = usize>> = match direction {
         Direction::Front => Box::new(0..line.len()),
         Direction::Back => Box::new((0..line.len()).rev()),
@@ -45,8 +45,7 @@ pub fn find(line: &[u8], direction: Direction) -> i32 {
                 }
                 return None;
             })
-        })
-        .unwrap()
+        }).ok_or(format!("could not parse a digit in '{:?}'", line))
 }
 
 #[cfg(test)]
@@ -56,7 +55,7 @@ mod tests {
     #[test]
     fn test_find() {
         let test = "three1aastwoned";
-        let result = find(test.as_bytes(), Direction::Back);
-        assert_eq!(result, 31)
+        let result = find(test.as_bytes(), Direction::Back).expect("error in test parse");
+        assert_eq!(result, 1)
     }
 }
