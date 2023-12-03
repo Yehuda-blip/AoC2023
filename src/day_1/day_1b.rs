@@ -1,4 +1,4 @@
-use anyhow::{Result, Error, anyhow};
+use anyhow::{Result, anyhow};
 
 const S_TO_N: [&str; 10] = [
     "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",

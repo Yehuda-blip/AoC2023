@@ -1,4 +1,4 @@
-use std::{str::FromStr};
+use std::str::FromStr;
 use anyhow::{Result, Error, anyhow};
 
 use regex::Regex;
