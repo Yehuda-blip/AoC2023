@@ -1,4 +1,5 @@
-use std::str::FromStr;
+use std::{str::FromStr};
+use anyhow::{Result, Error, anyhow};
 
 use regex::Regex;
 
@@ -33,24 +34,24 @@ impl FromStr for Color {
     }
 }
 
-pub(super) fn parse_color_pull(color_str: &str) -> Result<(i32, Color), String> {
+pub(super) fn parse_color_pull(color_str: &str) -> Result<(i32, Color)> {
     let value_color: Vec<&str> = color_str
         .split(' ')
         .filter(|s| !s.trim().is_empty())
         .collect();
     if value_color.len() != 2 {
-        return Err(format!("bad color pull '{}'", color_str));
+        return Err(anyhow!("bad color pull '{}'", color_str));
     };
     let (cube_num, color) = (
         i32::from_str(value_color[0])
-            .map_err(|_e| format!("could not parse '{}' as i32", value_color[0]))?,
+            .map_err(|_e| anyhow!("could not parse '{}' as i32", value_color[0]))?,
         Color::from_str(value_color[1])
-            .map_err(|_e| format!("could not parse '{}' as Color", value_color[1]))?,
+            .map_err(|_e| anyhow!("could not parse '{}' as Color", value_color[1]))?,
     );
     return Ok((cube_num, color));
 }
 
-pub fn solve(input: &String) -> Result<String, String> {
+pub fn solve(input: &String) -> Result<String> {
     let game_is_valid = |game_str: &str| {
         let color_pull_is_invalid = |(cube_num, color)| {
             Color::config(color) < cube_num
@@ -63,13 +64,13 @@ pub fn solve(input: &String) -> Result<String, String> {
     };
 
     let line_to_i32 = |line: &str| {
-        let semicolon_pos = line.find(':').ok_or("bad format, no semicolon")?;
+        let semicolon_pos = line.find(':').ok_or_else(|| anyhow!("bad format, no semicolon"))?;
         let game_num_capture = Regex::new(GAME_NUM_CAPTURE).unwrap();
-        let caps = game_num_capture.captures(&line[..semicolon_pos]).ok_or("bad format, cannot capture game number")?;
-        let game_num = i32::from_str((caps.get(1).unwrap()).as_str()).map_err(|_| "invalid game number")?;
+        let caps = game_num_capture.captures(&line[..semicolon_pos]).ok_or_else(|| anyhow!("bad format, cannot capture game number"))?;
+        let game_num = i32::from_str((caps.get(1).unwrap()).as_str()).map_err(|_| anyhow!("invalid game number"))?;
 
         if game_is_valid(&line[semicolon_pos + 1..])? {
-            return Ok::<i32, String>(game_num)
+            return Ok::<i32, Error>(game_num)
         }
         return Ok(0);
     };

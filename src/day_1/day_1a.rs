@@ -1,4 +1,6 @@
-pub fn solve(input: &String) -> Result<String, String> {
+use anyhow::Error;
+
+pub fn solve(input: &String) -> Result<String, Error> {
     Ok(input
         .split('\n')
         .fold(0, |sum, line| {

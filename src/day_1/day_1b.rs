@@ -1,3 +1,5 @@
+use anyhow::{Result, Error, anyhow};
+
 const S_TO_N: [&str; 10] = [
     "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
 ];
@@ -8,16 +10,16 @@ pub enum Direction {
     Back,
 }
 
-pub fn solve(input: &String) -> Result<String, String> {
+pub fn solve(input: &String) -> Result<String> {
     let sum = input
         .split('\n')
-        .try_fold::<i32, fn(i32, &str)->Result<i32, String>, Result<i32, String>>(0, |sum, line| {
+        .try_fold::<i32, fn(i32, &str)->Result<i32>, Result<i32>>(0, |sum, line| {
             Ok(sum + find(line.as_bytes(), Direction::Front)? * 10 + find(line.as_bytes(), Direction::Back)?)
         })?;
     return Ok(sum.to_string())
 }
 
-pub fn find(line: &[u8], direction: Direction) -> Result<i32, String> {
+pub fn find(line: &[u8], direction: Direction) -> Result<i32> {
     let indices: Box<dyn Iterator<Item = usize>> = match direction {
         Direction::Front => Box::new(0..line.len()),
         Direction::Back => Box::new((0..line.len()).rev()),
@@ -45,7 +47,7 @@ pub fn find(line: &[u8], direction: Direction) -> Result<i32, String> {
                 }
                 return None;
             })
-        }).ok_or(format!("could not parse a digit in '{:?}'", line))
+        }).ok_or(anyhow!("could not parse a digit in '{:?}'", line))
 }
 
 #[cfg(test)]
