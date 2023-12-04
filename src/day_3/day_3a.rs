@@ -1,4 +1,4 @@
-use std::{collections::VecDeque, io::{self, Write}};
+use std::collections::VecDeque;
 use anyhow::Result;
 
 pub fn solve(input: &String) -> Result<String> {

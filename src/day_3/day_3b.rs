@@ -45,7 +45,7 @@ fn extract_previous_line_gear_products(line_queue: &VecDeque::<Vec::<InterestPoi
                 let mut increased_index_near_target = false;
                 while captured_parts_num.len() <= 2 && *adjacent_vec_i < adjacent_vec.len() && (range(&adjacent_vec[*adjacent_vec_i])).start <= (pos + 1) {
                     match adjacent_vec[*adjacent_vec_i] {
-                        InterestPoint::PartNumber { number, start_pos, len } => {
+                        InterestPoint::PartNumber { number, .. } => {
                             captured_parts_num.push(number);
                         },
                         _ => {}
@@ -66,7 +66,7 @@ fn extract_previous_line_gear_products(line_queue: &VecDeque::<Vec::<InterestPoi
                 let mut captured = vec![];
                 if i > 0 {
                     match middle_points[i-1] {
-                        InterestPoint::PartNumber { number, start_pos, len  } => {
+                        InterestPoint::PartNumber { number, .. } => {
                             if range(&middle_points[i-1]).end == *pos {
                                 captured.push(number)
                             }
@@ -76,7 +76,7 @@ fn extract_previous_line_gear_products(line_queue: &VecDeque::<Vec::<InterestPoi
                 }
                 if i + 1 < middle_points.len() {
                     match middle_points[i+1] {
-                        InterestPoint::PartNumber { number, start_pos, len  } => {
+                        InterestPoint::PartNumber { number, ..  } => {
                             if range(&middle_points[i+1]).start == (pos + 1) {
                                 captured.push(number)
                             }

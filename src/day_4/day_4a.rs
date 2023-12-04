@@ -3,15 +3,18 @@ use std::collections::HashSet;
 use anyhow::{anyhow, Ok, Result};
 
 pub fn solve(input: &String) -> Result<String> {
-    let res: u32 = itertools::process_results(input.lines().map(|card| {
-        let (targets, scratches) = parse_card(card)?;
-        let match_count = count_matches(targets, scratches);
-        let score = match match_count {
-            0 => 0,
-            _ => 1 << (match_count - 1)
-        };
-        Ok(score)
-    }), |it| it.sum())?;
+    let res: u32 = itertools::process_results(
+        input.lines().map(|card| {
+            let (targets, scratches) = parse_card(card)?;
+            let match_count = count_matches(targets, scratches);
+            let score = match match_count {
+                0 => 0,
+                _ => 1 << (match_count - 1),
+            };
+            Ok(score)
+        }),
+        |it| it.sum(),
+    )?;
     return Ok(res.to_string());
 }
 
