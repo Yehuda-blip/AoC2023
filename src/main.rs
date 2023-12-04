@@ -1,7 +1,6 @@
-use std::fs;
+use std::{fs, time};
 use anyhow::Result;
 
-pub mod utils;
 pub mod day_1 {
     pub mod day_1a;
     pub mod day_1b;
@@ -25,5 +24,6 @@ const INPUT_PATH: &str = "input.txt";
 fn main() {
     let input =
         fs::read_to_string(INPUT_PATH).expect(&format!("Could not read input file {}", INPUT_PATH));
-    print!("{:?}", SOLVER(&input))
+    let my_time = time::Instant::now();
+    print!("got {:?} in {:?}", SOLVER(&input), my_time.elapsed())
 }
