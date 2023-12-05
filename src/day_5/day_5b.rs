@@ -55,8 +55,6 @@ pub fn solve(input: &String) -> Result<String> {
         let conversion = Conversion::from_str(conversion_map)?;
         let transformed = convert_ranges(&conversion, &seed_ranges)?;
         seed_ranges = sorted_and_united_ranges(transformed);
-        print!("{:?}\n", seed_ranges);
-        std::io::stdout().flush();
         return Ok::<(), Error>(())
     })?;
     let result = seed_ranges.iter().min_by_key(|range| range.start).context("no seed ranges left after proccessing")?;
