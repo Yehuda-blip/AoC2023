@@ -1,6 +1,7 @@
 use std::{fs, time};
 use anyhow::Result;
 
+pub mod utils;
 pub mod day_1 {
     pub mod day_1a;
     pub mod day_1b;
@@ -17,8 +18,12 @@ pub mod day_4 {
     pub mod day_4a;
     pub mod day_4b;
 }
+pub mod day_5 {
+    pub mod day_5a;
+    pub mod day_5b;
+}
 
-const SOLVER: fn(&String) -> Result<String> = day_4::day_4b::solve;
+const SOLVER: fn(&String) -> Result<String> = day_5::day_5b::solve;
 const INPUT_PATH: &str = "input.txt";
 
 fn main() {
