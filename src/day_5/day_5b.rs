@@ -1,10 +1,10 @@
-use std::{ops::Range, cmp::max, str::FromStr, io::Write};
+use std::{ops::Range, cmp::max, str::FromStr};
 
 use crate::utils::DOUBLE_LINE_ENDING;
 
 use super::day_5a::{ConversionRange, Conversion};
 
-use anyhow::{Result, anyhow, Context, Error};
+use anyhow::{Result, Context, Error};
 use itertools::Itertools;
 
 fn convert_range(converter: &ConversionRange, transforming: Range<i64>) -> Result<(Vec<Range<i64>>, Option<Range<i64>>)> {
