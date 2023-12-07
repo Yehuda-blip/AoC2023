@@ -26,8 +26,12 @@ pub mod day_6 {
     pub mod day_6a;
     pub mod day_6b;
 }
+pub mod day_7 {
+    mod camel_hand;
+    pub mod day_7a;
+}
 
-const SOLVER: fn(&String) -> Result<String> = day_6::day_6b::solve;
+const SOLVER: fn(&String) -> Result<String> = day_7::day_7a::solve;
 const INPUT_PATH: &str = "input.txt";
 
 fn main() {
