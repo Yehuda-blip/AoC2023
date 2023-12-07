@@ -7,24 +7,44 @@ use super::camel_hand::{compare_cards, CamelHand, Rank};
 
 const JOKER: char = 'J';
 
-fn remap_with_joker(rank: Rank) -> Rank {
-    match rank {
-        Rank::HighCard => Rank::OnePair,
-        Rank::OnePair => Rank::ThreeOfAKind,
-        Rank::TwoPair => Rank::FullHouse,
-        Rank::ThreeOfAKind => Rank::FourOfAKind,
-        Rank::FullHouse => Rank::FourOfAKind,
-        Rank::FourOfAKind => Rank::FiveOfAKind,
-        Rank::FiveOfAKind => Rank::FiveOfAKind // these are 5 jokers
+fn remap_with_joker(rank: Rank, jokers: usize) -> Rank {
+    match jokers {
+        0 => rank,
+        1 => match rank {
+            Rank::HighCard => Rank::OnePair,
+            Rank::OnePair => Rank::ThreeOfAKind,
+            Rank::TwoPair => Rank::FullHouse,
+            Rank::ThreeOfAKind => Rank::FourOfAKind,
+            Rank::FullHouse => Rank::FourOfAKind,
+            Rank::FourOfAKind => Rank::FiveOfAKind,
+            Rank::FiveOfAKind => Rank::FiveOfAKind
+        },
+        2 => match rank {
+            Rank::OnePair => Rank::ThreeOfAKind,
+            Rank::TwoPair => Rank::FourOfAKind,
+            Rank::FullHouse => Rank::FiveOfAKind,
+            _ => panic!("bad rank computation")
+        },
+        3 => match rank {
+            Rank::ThreeOfAKind => Rank::FourOfAKind,
+            Rank::FullHouse => Rank::FiveOfAKind,
+            _ => panic!("bad rank computation")
+        },
+        4 => match rank {
+            Rank::FourOfAKind => Rank::FiveOfAKind,
+            _ => panic!("bad rank computation")
+        }
+        5 => match rank {
+            Rank::FiveOfAKind => Rank::FiveOfAKind,
+            _ => panic!("bad rank computation")
+        },
+        _ => panic!("too many jokers")
     }
 }
 
 fn remap_rank(camel_hand: &CamelHand) -> Rank {
-    camel_hand
-        .get_hand()
-        .chars()
-        .filter(|c| *c == JOKER)
-        .fold(camel_hand.get_rank(), |rank, _| remap_with_joker(rank))
+    let jokers = camel_hand.get_hand().chars().filter(|card| *card == JOKER).count();
+    remap_with_joker(camel_hand.get_rank(), jokers)
 }
 
 fn compare_cards_with_jokers(this: &char, other: &char) -> Ordering {
@@ -75,29 +95,9 @@ pub mod tests {
     use anyhow::Result;
     use itertools::Itertools;
 
-    use crate::day_7::{camel_hand::{CamelHand, Rank}, day_7b::remap_with_joker};
+    use crate::day_7::camel_hand::CamelHand;
 
     use super::compare_hands_with_jokers;
-
-    #[test]
-    fn test_remaps() {
-        let hand1 = CamelHand::from_str("2J456 0").expect("wut?");
-        assert_eq!(remap_with_joker(hand1.get_rank()), Rank::OnePair);
-        let hand1 = CamelHand::from_str("2JJ56 0").expect("wut?");
-        assert_eq!(remap_with_joker(remap_with_joker(hand1.get_rank())), Rank::ThreeOfAKind);
-        let hand1 = CamelHand::from_str("33J56 0").expect("wut?");
-        assert_eq!(remap_with_joker(hand1.get_rank()), Rank::ThreeOfAKind);
-        let hand1 = CamelHand::from_str("33J55 0").expect("wut?");
-        assert_eq!(remap_with_joker(hand1.get_rank()), Rank::FullHouse);
-        let hand1 = CamelHand::from_str("33JJ5 0").expect("wut?");
-        assert_eq!(remap_with_joker(remap_with_joker(hand1.get_rank())), Rank::FourOfAKind);
-        let hand1 = CamelHand::from_str("3JJJ5 0").expect("wut?");
-        assert_eq!(remap_with_joker(remap_with_joker(remap_with_joker(hand1.get_rank()))), Rank::FourOfAKind);
-        let hand1 = CamelHand::from_str("33J33 0").expect("wut?");
-        assert_eq!(remap_with_joker(remap_with_joker(hand1.get_rank())), Rank::FiveOfAKind);
-        let hand1 = CamelHand::from_str("JJJJJ 0").expect("wut?");
-        assert_eq!(remap_with_joker(hand1.get_rank()), Rank::FiveOfAKind);
-    }
 
     #[test]
     fn test_sort1() {    

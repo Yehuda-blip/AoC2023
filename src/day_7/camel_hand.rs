@@ -6,8 +6,8 @@ use itertools::Itertools;
 const ACES_AND_FACES: [char; 5] = ['T', 'J', 'Q', 'K', 'A'];
 const CARDS_PER_HAND: usize = 5;
 
-#[derive(Clone, Copy)]
-enum Rank {
+#[derive(Debug, Clone, Copy)]
+pub(super) enum Rank {
     HighCard,
     OnePair,
     TwoPair,
@@ -43,10 +43,10 @@ pub(super) struct CamelHand {
     bid: u32
 }
 
-fn compare_cards(my_card: char, other_card: char) -> Ordering {
+pub(super) fn compare_cards(my_card: &char, other_card: &char) -> Ordering {
     match (
-        ACES_AND_FACES.iter().position(|c| *c == my_card),
-        ACES_AND_FACES.iter().position(|c| *c == other_card),
+        ACES_AND_FACES.iter().position(|c| c == my_card),
+        ACES_AND_FACES.iter().position(|c| c == other_card),
     ) {
         (Some(my_card_level), Some(other_card_level)) => my_card_level.cmp(&other_card_level),
         (Some(_), None) => Ordering::Greater,
@@ -66,7 +66,7 @@ fn compare_equal_ranked_hands(my_hand: &String, other_hand: &String) -> std::cmp
         .next()
     {
         None => Ordering::Equal,
-        Some((my_card, other_card)) => compare_cards(my_card, other_card),
+        Some((my_card, other_card)) => compare_cards(&my_card, &other_card),
     }
 }
 
@@ -126,5 +126,13 @@ impl FromStr for CamelHand {
 impl CamelHand {
     pub(super) fn get_bid(&self) -> u32 {
         self.bid
+    }
+
+    pub(super) fn get_hand(&self) -> &String {
+        &self.hand
+    }
+
+    pub(super) fn get_rank(&self) -> Rank{
+        self.rank
     }
 }
