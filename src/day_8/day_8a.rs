@@ -9,14 +9,14 @@ pub(super) const UNMARKED: u32 = 0;
 
 pub(super) enum User {
     Person,
-    Ghost,
+    _Ghost,
 }
 
 pub(super) struct Node<'a> {
     pub id: &'a str,
     pub left: &'a str,
     pub right: &'a str,
-    pub marker: u32,
+    pub _marker: u32,
 }
 
 pub fn solve(input: &String) -> Result<String> {
@@ -52,7 +52,7 @@ pub(super) fn construct_map<'a>(
         .iter()
         .filter_map(|(location_id, _node)| match who_is_this_for {
             User::Person if *location_id == "AAA" => Some(*location_id),
-            User::Ghost if location_id.chars().last()? == 'A' => Some(*location_id),
+            User::_Ghost if location_id.chars().last()? == 'A' => Some(*location_id),
             _ => None,
         })
         .collect();
@@ -69,7 +69,7 @@ fn node<'a>(line: &mut &'a str) -> Result<(&'a str, Node<'a>)> {
             id: curr_node,
             left: left,
             right: right,
-            marker: UNMARKED,
+            _marker: UNMARKED,
         },
     ))
 }

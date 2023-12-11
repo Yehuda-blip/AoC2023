@@ -10,7 +10,7 @@ fn compute_prev_history(line: &str) -> Result<i32> {
     let numbers: Vec<i32> = line.split_whitespace().map(|s| s.parse().context("bad number")).collect::<Result::<Vec<i32>>>()?;
     let len = numbers.len();
     let mut levels = vec![numbers];
-    for i in 1..len {
+    for _i in 1..len {
         let compute_from = levels.last().unwrap();
         let mut next = vec![];
         for j in 1..compute_from.len() {
