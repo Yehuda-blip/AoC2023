@@ -39,8 +39,12 @@ pub mod day_9 {
     pub mod day_9a;
     pub mod day_9b;
 }
+pub mod day_10 {
+    pub mod day_10a;
+    pub mod day_10b;
+}
 
-const SOLVER: fn(&String) -> Result<String> = day_9::day_9b::solve;
+const SOLVER: fn(&String) -> Result<String> = day_10::day_10b::solve;
 const INPUT_PATH: &str = "input.txt";
 
 fn main() {
