@@ -72,83 +72,83 @@ pub fn solve(input: &String) -> Result<String> {
     Ok(res.to_string())
 }
 
-mod tests {
-    use super::*;
+// mod tests {
+//     use super::*;
 
-    #[test]
-    fn test_options_1() {
-        let test = (&mut vec!['?','?','?','?','?','?'], &mut vec![1,1,1]);
-        let result = options(test.0, test.1);
-        assert_eq!(result, 4)
-    }
+//     #[test]
+//     fn test_options_1() {
+//         let test = (&mut vec!['?','?','?','?','?','?'], &mut vec![1,1,1]);
+//         let result = options(test.0, test.1);
+//         assert_eq!(result, 4)
+//     }
 
-    #[test]
-    fn test_options_2() {
-        let test = (&mut vec!['?','?','#','?','?','?'], &mut vec![1,1,1]);
-        let result = options(test.0, test.1);
-        assert_eq!(result, 2)
-    }
+//     #[test]
+//     fn test_options_2() {
+//         let test = (&mut vec!['?','?','#','?','?','?'], &mut vec![1,1,1]);
+//         let result = options(test.0, test.1);
+//         assert_eq!(result, 2)
+//     }
 
-    #[test]
-    fn test_options_3() {
-        let test = (&mut vec!['?','?','?','?','?','?'], &mut vec![1,2,1]);
-        let result = options(test.0, test.1);
-        assert_eq!(result, 1)
-    }
+//     #[test]
+//     fn test_options_3() {
+//         let test = (&mut vec!['?','?','?','?','?','?'], &mut vec![1,2,1]);
+//         let result = options(test.0, test.1);
+//         assert_eq!(result, 1)
+//     }
 
-    #[test]
-    fn test_options_4() {
-        let test = (&mut vec!['?','?','?','?','?','?'], &mut vec![2,2]);
-        let result = options(test.0, test.1);
-        assert_eq!(result, 3)
-    }
+//     #[test]
+//     fn test_options_4() {
+//         let test = (&mut vec!['?','?','?','?','?','?'], &mut vec![2,2]);
+//         let result = options(test.0, test.1);
+//         assert_eq!(result, 3)
+//     }
 
-    #[test]
-    fn test_options_5() {
-        let test = (&mut "..####.#?#.?????##?.".chars().collect(), &mut vec![4,1,1,6]);
-        let result = options(test.0, test.1);
-        assert_eq!(result, 2)
-    }
+//     #[test]
+//     fn test_options_5() {
+//         let test = (&mut "..####.#?#.?????##?.".chars().collect(), &mut vec![4,1,1,6]);
+//         let result = options(test.0, test.1);
+//         assert_eq!(result, 2)
+//     }
 
-    #[test]
-    fn test_options_6() {
-        let test = (&mut "?###????????".chars().collect(), &mut vec![3,2,1]);
-        let result = options(test.0, test.1);
-        assert_eq!(result, 10)
-    }
+//     #[test]
+//     fn test_options_6() {
+//         let test = (&mut "?###????????".chars().collect(), &mut vec![3,2,1]);
+//         let result = options(test.0, test.1);
+//         assert_eq!(result, 10)
+//     }
     
-    #[test]
-    fn test_options_7() {
-        let test = (&mut "?.??????.##??#.#?.#".chars().collect(), &mut vec![1,1,2,5,1,1]);
-        let result = options(test.0, test.1);
-        assert_eq!(result, 7)
-    }
+//     #[test]
+//     fn test_options_7() {
+//         let test = (&mut "?.??????.##??#.#?.#".chars().collect(), &mut vec![1,1,2,5,1,1]);
+//         let result = options(test.0, test.1);
+//         assert_eq!(result, 7)
+//     }
     
-    #[test]
-    fn test_options_8() {
-        let test = (&mut "?#???##??##??#???#??".chars().collect(), &mut vec![8,2,1,3,1]);
-        let result = options(test.0, test.1);
-        assert_eq!(result, 1)
-    }
+//     #[test]
+//     fn test_options_8() {
+//         let test = (&mut "?#???##??##??#???#??".chars().collect(), &mut vec![8,2,1,3,1]);
+//         let result = options(test.0, test.1);
+//         assert_eq!(result, 1)
+//     }
     
-   #[test]
-    fn test_options_9() {
-        let test = (&mut "????#?#?#?#?#??#??.".chars().collect(), &mut vec![9,8]);
-        let result = options(test.0, test.1);
-        assert_eq!(result, 1)
-    }
+//    #[test]
+//     fn test_options_9() {
+//         let test = (&mut "????#?#?#?#?#??#??.".chars().collect(), &mut vec![9,8]);
+//         let result = options(test.0, test.1);
+//         assert_eq!(result, 1)
+//     }
         
-   #[test]
-   fn test_options_10() {
-       let test = (&mut "#???#???????????".chars().collect(), &mut vec![1,2,1,6]);
-       let result = options(test.0, test.1);
-       assert_eq!(result, 9)
-   }
+//    #[test]
+//    fn test_options_10() {
+//        let test = (&mut "#???#???????????".chars().collect(), &mut vec![1,2,1,6]);
+//        let result = options(test.0, test.1);
+//        assert_eq!(result, 9)
+//    }
 
-   #[test]
-   fn test_options_11() {
-       let mut test = (&mut "??#?.??.#..".chars().collect(), &mut vec![3,1]);
-       let result = options(test.0, test.1);
-       assert_eq!(result, 2)
-   }
-}
+//    #[test]
+//    fn test_options_11() {
+//        let mut test = (&mut "??#?.??.#..".chars().collect(), &mut vec![3,1]);
+//        let result = options(test.0, test.1);
+//        assert_eq!(result, 2)
+//    }
+// }

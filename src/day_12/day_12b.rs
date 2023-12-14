@@ -1,5 +1,3 @@
-use std::collections::HashSet;
-
 use anyhow::{Result, Context};
 
 use crate::day_12::day_12a::options;

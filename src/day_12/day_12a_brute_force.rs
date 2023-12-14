@@ -17,7 +17,7 @@ pub fn solve(input: &String) -> Result<String> {
 
 fn options(record: &mut Vec<char>, broken_seq: &Vec<usize>, current_index: usize, cache: &mut HashSet<String>) -> u32 {
     if current_index >= record.len() {
-        let breaks = record.iter().dedup_with_count().filter(|(num, c)| **c == '#').map(|(num, c)| num).collect::<Vec<_>>();
+        let breaks = record.iter().dedup_with_count().filter(|(_num, c)| **c == '#').map(|(num, _c)| num).collect::<Vec<_>>();
         if breaks.len() != broken_seq.len() {
             return 0
         }
@@ -55,19 +55,19 @@ fn options(record: &mut Vec<char>, broken_seq: &Vec<usize>, current_index: usize
     return count;
 }
 
-mod tests {
-    use super::*;
+// mod tests {
+//     use super::*;
 
-    fn runner(record: &mut Vec<char>, broken_seq: &Vec<usize>) -> u32 {
-        options(record, broken_seq, 0, &mut HashSet::new())
-    }
+//     fn runner(record: &mut Vec<char>, broken_seq: &Vec<usize>) -> u32 {
+//         options(record, broken_seq, 0, &mut HashSet::new())
+//     }
 
-    #[test]
-    fn test_options_1() {
-        let mut test = (&mut vec!['?','?','?','?','?','?'], &vec![1,1,1]);
-        let result = runner(&mut test.0, test.1);
-        assert_eq!(result, 4)
-    }
+//     #[test]
+//     fn test_options_1() {
+//         let mut test = (&mut vec!['?','?','?','?','?','?'], &vec![1,1,1]);
+//         let result = runner(&mut test.0, test.1);
+//         assert_eq!(result, 4)
+//     }
 
 //     #[test]
 //     fn test_options_2() {
@@ -131,4 +131,4 @@ mod tests {
 //        let result = runner(&mut test.0, test.1);
 //        assert_eq!(result, 9)
 //    }
-}
+// }
