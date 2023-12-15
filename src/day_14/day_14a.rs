@@ -1,7 +1,8 @@
 use anyhow::{anyhow, Context, Result};
 use ndarray::Array2;
 
-fn calculate_pressure(rocks_map: &Array2<char>) -> Result<usize> {
+pub fn calculate_pressure(rocks_map: &Array2<char>) -> Result<usize> {
+    println!("{:?}", rocks_map);
     itertools::process_results(
         rocks_map
             .rows()
@@ -22,7 +23,7 @@ fn calculate_pressure(rocks_map: &Array2<char>) -> Result<usize> {
                 )
             })
             .map(|folding| {
-                // println!("{:?}", folding);
+                println!("{:?}", folding);
                 match folding {
                     Ok((_last_cube, _rounded_on_cube, load)) => Ok(load),
                     Err(e) => Err(e),
