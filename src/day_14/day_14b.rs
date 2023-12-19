@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use anyhow::{anyhow, Context, Result};
+use anyhow::{Context, Result};
 use ndarray::Array2;
 
 pub fn calculate_pressure(rocks_map: &Array2<char>) -> Result<usize> {
@@ -119,7 +119,7 @@ pub fn solve(input: &String) -> Result<String> {
         if let Some(first_occurence) = cache.get(&v) {
             let period = i - first_occurence;
             let wtf = 1_000_000_000 - i;
-            let (remaining, wtf2) = (wtf % period, wtf / period);
+            let (remaining, _wtf2) = (wtf % period, wtf / period);
             for _ in 0..remaining {
                 mat = cycle(&mat);
             }
