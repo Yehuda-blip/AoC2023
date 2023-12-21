@@ -1,119 +1,71 @@
-use anyhow::{anyhow, Context, Result};
-use itertools::Itertools;
+use anyhow::{anyhow, Result};
 use winnow::{
     ascii::{dec_uint, hex_uint},
     token::one_of,
-    PResult, Parser,
+    PResult, Parser, error::ContextError,
 };
 
 pub fn solve(input: &String) -> Result<String> {
-    let digger_steps: Vec<(char, u32, u64)> = input
+    let digger_steps = input
         .lines()
         .map(|mut line| digger_step(&mut line).map_err(|parse_err| anyhow!(parse_err)))
-        .collect::<Result<Vec<(char, u32, u64)>>>()?;
+        .collect::<Result<Vec<(char, i64)>>>()?;
 
-    // I really should check for backwards stepping but I'm like 3 days behind
-    if digger_steps
-        .iter()
-        .tuple_windows()
-        .any(|(step1, step2)| step1.0 == step2.0)
-    {
-        return Err(anyhow!("two cinsecutive steps in the same direction"));
-    }
-
-    let mut left_right_cursor = 0;
-    let mut up_down_cursor = 0;
-    let mut map = Vec::<((i32, i32), char)>::new();
-    digger_steps
-        .iter()
-        .fold('S', |last_dir, (direction, steps, _)| {
-            match direction {
-                _ if last_dir == 'S' => {
-                    map.push(((up_down_cursor, left_right_cursor), 'S'));
-                }
-
-                'L' if last_dir == 'D' => {
-                    map.push(((up_down_cursor, left_right_cursor), 'J'));
-                }
-                'L' if last_dir == 'U' => {
-                    map.push(((up_down_cursor, left_right_cursor), '7'));
-                }
-
-                'R' if last_dir == 'D' => {
-                    map.push(((up_down_cursor, left_right_cursor), 'L'));
-                }
-                'R' if last_dir == 'U' => {
-                    map.push(((up_down_cursor, left_right_cursor), 'F'));
-                }
-
-                'U' if last_dir == 'R' => {
-                    map.push(((up_down_cursor, left_right_cursor), 'J'));
-                }
-                'U' if last_dir == 'L' => {
-                    map.push(((up_down_cursor, left_right_cursor), 'L'));
-                }
-
-                'D' if last_dir == 'R' => {
-                    map.push(((up_down_cursor, left_right_cursor), '7'));
-                }
-                'D' if last_dir == 'L' => {
-                    map.push(((up_down_cursor, left_right_cursor), 'F'));
-                }
-                _ => panic!("invalid direction passed parsing"),
-            };
-
-            for _ in 1..*steps {
-                match direction {
-                    'U' => up_down_cursor -= 1,
-                    'D' => up_down_cursor += 1,
-                    'L' => left_right_cursor -= 1,
-                    'R' => left_right_cursor += 1,
-                    _ => panic!("invalid direction passed parsing"),
-                };
-
-                let pipe_char = match direction {
-                    'U' | 'D' => '|',
-                    'L' | 'R' => '-',
-                    _ => panic!("invalid direction passed parsing"),
-                };
-
-                map.push(((up_down_cursor, left_right_cursor), pipe_char));
-            }
-            match direction {
-                'U' => up_down_cursor -= 1,
-                'D' => up_down_cursor += 1,
-                'L' => left_right_cursor -= 1,
-                'R' => left_right_cursor += 1,
-                _ => panic!("invalid direction passed parsing"),
-            };
-
-            *direction
-        });
-
-    let min_row = map.iter().map(|entry| entry.0 .0).min().context("wtf?")?;
-    let min_col = map.iter().map(|entry| entry.0 .1).min().context("wtf?")?;
-    let max_row = map.iter().map(|entry| entry.0 .0).max().context("wtf?")?;
-    let max_col = map.iter().map(|entry| entry.0 .1).max().context("wtf?")?;
-
-    let mut map_as_pipes =
-        vec![vec!['.'; (max_col - min_col + 1) as usize]; (max_row - min_row + 1) as usize];
-    map.iter().for_each(|((i, j), c)| {
-        map_as_pipes[(*i - min_row) as usize][(*j - min_col) as usize] = *c;
-    });
-
-    let val = crate::day_10::day_10b::calc_inside(&mut map_as_pipes)?;
-    return Ok((val + map.len() as u32).to_string());
+    let area = virtual_additions(&digger_steps);
+    return Ok(area.to_string());
 }
 
-fn digger_step<'s>(input: &mut &'s str) -> PResult<(char, u32, u64)> {
-    let (dig_direction, _, steps, _, hex_line, _) = (
+fn digger_step<'s>(input: &mut &'s str) -> PResult<(char, i64)> {
+    let (dig_direction, _, steps, _, _, _) = (
         one_of(['U', 'R', 'D', 'L']),
         " ",
-        dec_uint,
+        dec_uint::<&'s str, u64, ContextError>,
         " (#",
-        hex_uint,
+        hex_uint::<&'s str, u64, ContextError>,
         ")",
     )
         .parse_next(input)?;
-    Ok((dig_direction, steps, hex_line))
+    Ok((dig_direction, steps as i64))
 }
+
+pub(super) fn virtual_additions(digger_steps: &Vec<(char, i64)>) -> i64 {
+    /*
+     * This is non trivial (at the very least, this took me several hours to figure out).
+     * The basic idea is to sum many integrals of constant fuctions. Some of the integrals
+     * have a positive orientation (in this implementation, movements to the right), and
+     * the other have a negative orientation (movements to left - integrating from a larger
+     * value to a lower one). We can calculate the constant value of each function as the
+     * current 'vertical_pos'.
+     * The idea here is to relate to the trench as having an infinite vertical position,
+     * which is easily offset back to a 0 vertical position. Because the trench closes 
+     * a loop, each positive integral (right movement) must have some corresponding 
+     * negative integration (which could contain parts of multiple negative integrals).
+     * By assuming that each right movement adds infinity * movement to the sum, and each
+     * left movement removes infinity * movement from the sum, we can let them cancel each
+     * other out naturally and just relate to the horizontal position of the current integral
+     * offset to 0. Of course, nothing guarantees that we are calcultaing in the correct horizontal
+     * orientation, and so we might get a negative area which will need to tranform into absolute
+     * value.
+     * In this implementation the descrete nature of the problem, together with the calculation
+     * of the circumference as part of the area, mean that we do not add the first cubic meter
+     * to the sum of the circumference, and only half of the circumference is computed inside the
+     * area (one of up/down and one of left/right), this is accounted for in the return statement.
+     */
+    let mut vertical_pos = 0;
+    let mut area = 0;
+    let mut circumference = 0;
+    for (direction, step_size) in digger_steps {
+        circumference += step_size;
+        match direction {
+            'U' => vertical_pos += step_size,
+            'D' => vertical_pos -= step_size,
+            'R' => area += vertical_pos * step_size,
+            'L' => area -= vertical_pos * step_size,
+            _ => {panic!("bad direction, what happened?")}
+        }
+    };
+    let area = area.abs();
+
+    return area + (circumference / 2) + 1;
+}
+
