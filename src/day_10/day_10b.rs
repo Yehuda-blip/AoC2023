@@ -4,6 +4,10 @@ use super::day_10a::{find_largest_loop, longtitude_latitude_map};
 
 pub fn solve(input: &String) -> Result<String> {
     let mut map = longtitude_latitude_map(input);
+    return Ok(calc_inside(&mut map)?.to_string())
+}
+
+pub fn calc_inside(map: &mut Vec<Vec<char>>) -> Result<u32> {
     let start_pos = (0..map.len())
         .flat_map(|i| (0..map[i].len()).map(move |j| (i, j)))
         .find(|(row, col)| map[*row][*col] == 'S')
@@ -55,6 +59,5 @@ pub fn solve(input: &String) -> Result<String> {
         });
         return count;
     }).sum();
-    return Ok(inside.to_string())
-    
+    Ok(inside)
 }
