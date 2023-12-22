@@ -10,7 +10,7 @@ use winnow::{
 
 use crate::utils::DOUBLE_LINE_ENDING;
 
-#[derive(PartialEq)]
+#[derive(PartialEq, Clone, Copy)]
 pub(super) enum Valuation {
     X,
     M,
@@ -19,7 +19,7 @@ pub(super) enum Valuation {
     Empty,
 }
 
-#[derive(PartialEq)]
+#[derive(PartialEq, Clone, Copy)]
 pub(super) enum MyOrd {
     G,
     L,
